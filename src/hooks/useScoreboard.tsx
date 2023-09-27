@@ -21,6 +21,7 @@ export function useScoreboard() {
     setMatches((prevState) => {
       const updatedMatches = [...prevState];
       const index = updatedMatches.findIndex((match) => match.id === id);
+      if (index === -1) return prevState;
       updatedMatches[index].homeScore = homeScore;
       updatedMatches[index].awayScore = awayScore;
       return updatedMatches;
@@ -31,6 +32,7 @@ export function useScoreboard() {
     setMatches((prevState) => {
       const updatedMatches = [...prevState];
       const index = updatedMatches.findIndex((match) => match.id === id);
+      if (index === -1) return prevState;
       updatedMatches.splice(index, 1);
       return updatedMatches;
     });
