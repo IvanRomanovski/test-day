@@ -1,7 +1,41 @@
 import { useState } from 'react';
 import { Match } from '../types/Match';
 
-export function useScoreboard() {
+/**
+ * Interface for scoreboard functions.
+ */
+export interface ScoreboardFunctions {
+  /**
+   * Starts a new match.
+   * @param homeTeam - The name of the home team.
+   * @param awayTeam - The name of the away team.
+   * @returns The ID of the new match.
+   */
+  startNewMatch: (homeTeam: string, awayTeam: string) => string;
+  /**
+   * Updates the score of a match.
+   * @param homeScore - The new score of the home team.
+   * @param awayScore - The new score of the away team.
+   * @param id - The ID of the match to update.
+   */
+  updateScore: (homeScore: number, awayScore: number, id: string) => void;
+  /**
+   * Finishes a match.
+   * @param id - The ID of the match to finish.
+   */
+  finishMatch: (id: string) => void;
+  /**
+   * Gets a summary of all matches.
+   * @returns An array of Match objects.
+   */
+  getMatchesSummary: () => Match[];
+}
+
+/**
+ * Custom hook that manages a scoreboard for matches.
+ * @returns A tuple containing an array of matches and an object with functions to manage the scoreboard.
+ */
+export function useScoreboard(): [Match[], ScoreboardFunctions] {
   const [matches, setMatches] = useState<Match[]>([]);
 
   const startNewMatch = (homeTeam: string, awayTeam: string): string => {
@@ -10,10 +44,16 @@ export function useScoreboard() {
       awayTeam,
       homeScore: 0,
       awayScore: 0,
-      id: Math.random().toString(16).slice(2),
+      id: `${homeTeam}-${awayTeam}`,
     };
 
-    setMatches((prevState) => [...prevState, newMatch]);
+    setMatches((prevState) => {
+      const index = prevState.findIndex((match) => match.id === newMatch.id);
+      if (index !== -1) return prevState;
+
+      return [...prevState, newMatch];
+    });
+
     return newMatch.id;
   };
 
@@ -55,11 +95,8 @@ export function useScoreboard() {
     return matchesSummary.map((value) => value.match);
   };
 
-  return {
+  return [
     matches,
-    startNewMatch,
-    updateScore,
-    finishMatch,
-    getMatchesSummary,
-  };
+    { startNewMatch, updateScore, finishMatch, getMatchesSummary },
+  ];
 }
