@@ -45,7 +45,7 @@ export function useScoreboard() {
 
     matchesSummary.sort((a, b) => {
       if (a.totalScore === b.totalScore) {
-        return a.index - b.index;
+        return b.index - a.index;
       }
       return b.totalScore - a.totalScore;
     });
