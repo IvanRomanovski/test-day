@@ -4,8 +4,20 @@ import { Scoreboard } from './Scoreboard';
 import { Match } from '../types/Match';
 
 const matches: Match[] = [
-  { homeTeam: 'Team A', awayTeam: 'Team B', homeScore: 2, awayScore: 1 },
-  { homeTeam: 'Team C', awayTeam: 'Team D', homeScore: 0, awayScore: 0 },
+  {
+    homeTeam: 'Team A',
+    awayTeam: 'Team B',
+    homeScore: 2,
+    awayScore: 1,
+    id: '9cf406aee3e1e',
+  },
+  {
+    homeTeam: 'Team C',
+    awayTeam: 'Team D',
+    homeScore: 0,
+    awayScore: 0,
+    id: 'c0c3e8e3accbb8',
+  },
 ];
 
 describe('Scoreboard', () => {

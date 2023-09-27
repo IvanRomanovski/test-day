@@ -9,6 +9,7 @@ describe('Score component', () => {
     awayTeam: 'Barcelona',
     homeScore: 2,
     awayScore: 1,
+    id: '55236114cc3d48',
   };
 
   it('renders the correct score', () => {
