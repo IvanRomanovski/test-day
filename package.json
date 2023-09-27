@@ -1,0 +1,18 @@
+{
+  "name": "scoreboard",
+  "version": "1.0.0",
+  "description": "Live Football World Cup Scoreboard library that shows all the ongoing matches and their scores",
+  "main": "index.tsx",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IvanRomanovski/test-day.git"
+  },
+  "author": "Ivan Romanovski",
+  "bugs": {
+    "url": "https://github.com/IvanRomanovski/test-day/issues"
+  },
+  "homepage": "https://github.com/IvanRomanovski/test-day#readme"
+}
