@@ -72,7 +72,7 @@ describe('useScoreboard', () => {
     const { result } = renderHook(() => useScoreboard());
 
     act(() => {
-      const id = result.current[1].startNewMatch('Home', 'Away');
+      result.current[1].startNewMatch('Home', 'Away');
       result.current[1].updateScore(2, 1, 'random-id');
       result.current[1].finishMatch('random-id');
     });

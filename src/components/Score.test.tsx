@@ -9,11 +9,11 @@ describe('Score component', () => {
     awayTeam: 'Barcelona',
     homeScore: 2,
     awayScore: 1,
-    id: '55236114cc3d48',
+    id: 'Real Madrid - Barcelona',
   };
 
   it('renders the correct score', () => {
     const { getByText } = render(<Score match={match} />);
-    expect(getByText('Real Madrid 2 : Barcelona 1')).toBeInTheDocument();
+    expect(getByText('Real Madrid 2 - Barcelona 1')).toBeInTheDocument();
   });
 });

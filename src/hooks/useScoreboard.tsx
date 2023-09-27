@@ -44,7 +44,7 @@ export function useScoreboard(): [Match[], ScoreboardFunctions] {
       awayTeam,
       homeScore: 0,
       awayScore: 0,
-      id: `${homeTeam}-${awayTeam}`,
+      id: `${homeTeam} - ${awayTeam}`,
     };
 
     setMatches((prevState) => {

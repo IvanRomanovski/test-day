@@ -12,5 +12,5 @@ export interface ScoreProps {
  */
 export function Score({ match }: ScoreProps) {
   const { homeTeam, awayTeam, homeScore, awayScore } = match;
-  return <li>{`${homeTeam} ${homeScore} : ${awayTeam} ${awayScore}`}</li>;
+  return <li>{`${homeTeam} ${homeScore} - ${awayTeam} ${awayScore}`}</li>;
 }
