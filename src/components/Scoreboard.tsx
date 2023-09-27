@@ -8,10 +8,10 @@ export interface ScoreboardProps {
 
 export function Scoreboard({ matches }: ScoreboardProps) {
   return (
-    <ul>
+    <ol>
       {matches.map((match, index) => (
         <Score key={index} match={match} />
       ))}
-    </ul>
+    </ol>
   );
 }
