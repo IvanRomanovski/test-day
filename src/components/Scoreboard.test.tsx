@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom';
 import React from 'react';
 import { screen, render } from '@testing-library/react';
 import { Scoreboard } from './Scoreboard';
@@ -10,6 +11,7 @@ const matches: Match[] = [
     homeScore: 2,
     awayScore: 1,
     id: 'Team A - Team B',
+    date: new Date(),
   },
   {
     homeTeam: 'Team C',
@@ -17,6 +19,7 @@ const matches: Match[] = [
     homeScore: 0,
     awayScore: 0,
     id: 'Team C - Team D',
+    date: new Date(),
   },
 ];
 

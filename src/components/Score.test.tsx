@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom';
 import React from 'react';
 import { render } from '@testing-library/react';
 import { Score } from './Score';
@@ -10,6 +11,7 @@ describe('Score component', () => {
     homeScore: 2,
     awayScore: 1,
     id: 'Real Madrid - Barcelona',
+    date: new Date(),
   };
 
   it('renders the correct score', () => {

@@ -6,13 +6,12 @@ Scoreboard is a library that shows all ongoing matches and their scores.
 
 ```ts
 import React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Scoreboard, useScoreboard } from 'scoreboard';
 
 export default function Home() {
-  const [matches, { startNewMatch, updateScore, getMatchesSummary }] =
+  const [matches, { startNewMatch, updateScore, finishMatch }] =
     useScoreboard();
-  const [sortedMatches, setSortedMatches] = useState(getMatchesSummary());
 
   useEffect(() => {
     // Start new matches assuming initial score 0 – 0
@@ -24,25 +23,18 @@ export default function Home() {
     updateScore(0, 5, id1);
     updateScore(10, 2, id2);
     updateScore(2, 2, id3);
-  }, []);
 
-  // On change in scoreboard one can get matches ordered by
-  // their total score. If matches have the same total score
-  // most recently started match is returned first.
-  useEffect(() => {
-    setSortedMatches(getMatchesSummary());
-  }, [matches]);
+    // Remove match from scoreboard
+    finishMatch(id1);
+  }, []);
 
   return (
     <>
       <Scoreboard matches={matches} />
-      <Scoreboard matches={sortedMatches} />
     </>
   );
 }
 ```
-
-_Note:_ From the instructions it seemed like there should be an option to retain original match order and have a possibility of getting sorted matches via "match summary". If I am incorrect and matches should always be sorted, then `getMatchesSummary` method should be
 
 ## Local development
 

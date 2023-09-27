@@ -24,11 +24,6 @@ export interface ScoreboardFunctions {
    * @param id - The ID of the match to finish.
    */
   finishMatch: (id: string) => void;
-  /**
-   * Gets a summary of all matches.
-   * @returns An array of Match objects.
-   */
-  getMatchesSummary: () => Match[];
 }
 
 /**
@@ -45,6 +40,7 @@ export function useScoreboard(): [Match[], ScoreboardFunctions] {
       homeScore: 0,
       awayScore: 0,
       id: `${homeTeam} - ${awayTeam}`,
+      date: new Date(),
     };
 
     setMatches((prevState) => {
@@ -64,6 +60,22 @@ export function useScoreboard(): [Match[], ScoreboardFunctions] {
       if (index === -1) return prevState;
       updatedMatches[index].homeScore = homeScore;
       updatedMatches[index].awayScore = awayScore;
+
+      // Sort matches by total score and date
+      const totalScore = (match: Match): number =>
+        match.homeScore + match.awayScore;
+
+      updatedMatches.sort((a, b) => {
+        const totalScoreA = totalScore(a);
+        const totalScoreB = totalScore(b);
+
+        if (totalScoreA === totalScoreB) {
+          return b.date.getTime() - a.date.getTime();
+        }
+
+        return totalScoreB - totalScoreA;
+      });
+
       return updatedMatches;
     });
   };
@@ -78,25 +90,5 @@ export function useScoreboard(): [Match[], ScoreboardFunctions] {
     });
   };
 
-  const getMatchesSummary = (): Match[] => {
-    const matchesSummary = matches.map((value, index) => ({
-      index,
-      match: value,
-      totalScore: value.homeScore + value.awayScore,
-    }));
-
-    matchesSummary.sort((a, b) => {
-      if (a.totalScore === b.totalScore) {
-        return b.index - a.index;
-      }
-      return b.totalScore - a.totalScore;
-    });
-
-    return matchesSummary.map((value) => value.match);
-  };
-
-  return [
-    matches,
-    { startNewMatch, updateScore, finishMatch, getMatchesSummary },
-  ];
+  return [matches, { startNewMatch, updateScore, finishMatch }];
 }

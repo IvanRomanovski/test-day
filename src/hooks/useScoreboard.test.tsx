@@ -22,6 +22,7 @@ describe('useScoreboard', () => {
         homeScore: 0,
         awayScore: 0,
         id: expect.any(String),
+        date: expect.any(Date),
       },
     ]);
   });
@@ -53,6 +54,7 @@ describe('useScoreboard', () => {
         homeScore: 2,
         awayScore: 1,
         id: expect.any(String),
+        date: expect.any(Date),
       },
     ]);
   });
@@ -84,6 +86,7 @@ describe('useScoreboard', () => {
         homeScore: 0,
         awayScore: 0,
         id: expect.any(String),
+        date: expect.any(Date),
       },
     ]);
   });
@@ -98,14 +101,14 @@ describe('useScoreboard', () => {
       result.current[1].updateScore(1, 2, id2);
     });
 
-    const summary = result.current[1].getMatchesSummary();
-    expect(summary).toEqual([
+    expect(result.current[0]).toEqual([
       {
         homeTeam: 'Home2',
         awayTeam: 'Away2',
         homeScore: 1,
         awayScore: 2,
         id: expect.any(String),
+        date: expect.any(Date),
       },
       {
         homeTeam: 'Home1',
@@ -113,6 +116,7 @@ describe('useScoreboard', () => {
         homeScore: 2,
         awayScore: 0,
         id: expect.any(String),
+        date: expect.any(Date),
       },
     ]);
   });
@@ -121,20 +125,24 @@ describe('useScoreboard', () => {
     const { result } = renderHook(() => useScoreboard());
 
     act(() => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date(2023, 1, 1));
       const id1 = result.current[1].startNewMatch('Home1', 'Away1');
+      jest.setSystemTime(new Date(2024, 1, 1));
       const id2 = result.current[1].startNewMatch('Home2', 'Away2');
+      jest.useRealTimers();
       result.current[1].updateScore(0, 0, id1);
       result.current[1].updateScore(0, 0, id2);
     });
 
-    const summary = result.current[1].getMatchesSummary();
-    expect(summary).toEqual([
+    expect(result.current[0]).toEqual([
       {
         homeTeam: 'Home2',
         awayTeam: 'Away2',
         homeScore: 0,
         awayScore: 0,
         id: expect.any(String),
+        date: expect.any(Date),
       },
       {
         homeTeam: 'Home1',
@@ -142,6 +150,7 @@ describe('useScoreboard', () => {
         homeScore: 0,
         awayScore: 0,
         id: expect.any(String),
+        date: expect.any(Date),
       },
     ]);
   });
@@ -150,11 +159,18 @@ describe('useScoreboard', () => {
     const { result } = renderHook(() => useScoreboard());
 
     act(() => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date(2023, 1, 1));
       const id1 = result.current[1].startNewMatch('Mexico', 'Canada');
+      jest.setSystemTime(new Date(2024, 1, 1));
       const id2 = result.current[1].startNewMatch('Spain', 'Brazil');
+      jest.setSystemTime(new Date(2025, 1, 1));
       const id3 = result.current[1].startNewMatch('Germany', 'France');
+      jest.setSystemTime(new Date(2026, 1, 1));
       const id4 = result.current[1].startNewMatch('Uruguay', 'Italy');
+      jest.setSystemTime(new Date(2027, 1, 1));
       const id5 = result.current[1].startNewMatch('Argentina', 'Australia');
+      jest.useRealTimers();
       result.current[1].updateScore(0, 5, id1);
       result.current[1].updateScore(10, 2, id2);
       result.current[1].updateScore(2, 2, id3);
@@ -162,14 +178,14 @@ describe('useScoreboard', () => {
       result.current[1].updateScore(3, 1, id5);
     });
 
-    const summary = result.current[1].getMatchesSummary();
-    expect(summary).toEqual([
+    expect(result.current[0]).toEqual([
       {
         homeTeam: 'Uruguay',
         awayTeam: 'Italy',
         homeScore: 6,
         awayScore: 6,
         id: expect.any(String),
+        date: expect.any(Date),
       },
       {
         homeTeam: 'Spain',
@@ -177,6 +193,7 @@ describe('useScoreboard', () => {
         homeScore: 10,
         awayScore: 2,
         id: expect.any(String),
+        date: expect.any(Date),
       },
       {
         homeTeam: 'Mexico',
@@ -184,6 +201,7 @@ describe('useScoreboard', () => {
         homeScore: 0,
         awayScore: 5,
         id: expect.any(String),
+        date: expect.any(Date),
       },
       {
         homeTeam: 'Argentina',
@@ -191,6 +209,7 @@ describe('useScoreboard', () => {
         homeScore: 3,
         awayScore: 1,
         id: expect.any(String),
+        date: expect.any(Date),
       },
       {
         homeTeam: 'Germany',
@@ -198,6 +217,7 @@ describe('useScoreboard', () => {
         homeScore: 2,
         awayScore: 2,
         id: expect.any(String),
+        date: expect.any(Date),
       },
     ]);
   });
