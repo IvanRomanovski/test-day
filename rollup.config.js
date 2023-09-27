@@ -25,10 +25,12 @@ export default [
       commonjs(),
       typescript({ tsconfig: "./tsconfig.json" }),
     ],
+    external: Object.keys(packageJson.devDependencies)
+      .concat(Object.keys(packageJson.peerDependencies)),
   },
   {
     input: "dist/esm/types/index.d.ts",
     output: [{ file: "dist/index.d.ts", format: "esm" }],
-    plugins: [dts()],
+    plugins: [dts.default()],
   },
 ];
