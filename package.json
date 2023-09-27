@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "Live Football World Cup Scoreboard library that shows all the ongoing matches and their scores",
   "scripts": {
+    "lint": "eslint .",
     "test": "jest",
-    "rollup": "rollup -c --bundleConfigAsCjs"
+    "build": "rollup -c --bundleConfigAsCjs"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,9 @@
     "@testing-library/react": "^14.0.0",
     "@types/jest": "^29.5.5",
     "@types/react": "^18.2.23",
+    "@typescript-eslint/eslint-plugin": "^6.7.3",
+    "@typescript-eslint/parser": "^6.7.3",
+    "eslint": "^8.50.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-react": "^7.33.2",
     "jest": "^29.7.0",
