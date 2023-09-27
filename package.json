@@ -14,5 +14,10 @@
   "bugs": {
     "url": "https://github.com/IvanRomanovski/test-day/issues"
   },
-  "homepage": "https://github.com/IvanRomanovski/test-day#readme"
+  "homepage": "https://github.com/IvanRomanovski/test-day#readme",
+  "devDependencies": {
+    "@types/react": "^18.2.23",
+    "react": "^18.2.0",
+    "typescript": "^5.2.2"
+  }
 }
