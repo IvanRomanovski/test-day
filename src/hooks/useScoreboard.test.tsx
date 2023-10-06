@@ -137,12 +137,10 @@ describe('useScoreboard', () => {
     act(() => {
       jest.useFakeTimers();
       jest.setSystemTime(new Date(2023, 1, 1));
-      const id1 = result.current[1].startNewMatch('Home1', 'Away1');
+      result.current[1].startNewMatch('Home1', 'Away1');
       jest.setSystemTime(new Date(2024, 1, 1));
-      const id2 = result.current[1].startNewMatch('Home2', 'Away2');
+      result.current[1].startNewMatch('Home2', 'Away2');
       jest.useRealTimers();
-      result.current[1].updateScore(0, 0, id1);
-      result.current[1].updateScore(0, 0, id2);
     });
 
     expect(result.current[0]).toEqual([

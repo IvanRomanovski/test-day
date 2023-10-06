@@ -48,7 +48,7 @@ export function useScoreboard(): [Match[], ScoreboardFunctions] {
       const index = prevState.findIndex((match) => match.id === newMatch.id);
       if (index !== -1) return prevState;
 
-      return [...prevState, newMatch];
+      return [newMatch, ...prevState];
     });
 
     return newMatch.id;
