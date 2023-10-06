@@ -12,7 +12,7 @@ const matches: Match[] = [
     awayScore: 0,
     id: 'Team A - Team B',
     date: new Date(),
-    goals: [],
+    events: [],
   },
   {
     homeTeam: 'Team C',
@@ -21,7 +21,7 @@ const matches: Match[] = [
     awayScore: 0,
     id: 'Team C - Team D',
     date: new Date(),
-    goals: [],
+    events: [],
   },
 ];
 

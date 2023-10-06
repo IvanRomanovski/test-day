@@ -1,6 +1,8 @@
 import { renderHook, act } from '@testing-library/react';
 import { useScoreboard } from './useScoreboard';
 import { Player } from '../types/Player';
+import { MatchEventType } from '../types/MatchEventType';
+import { CardType } from '../types/CardType';
 
 const randomPlayer = (): Player => ({
   firstName: Math.random().toString(36).substring(7),
@@ -29,7 +31,7 @@ describe('useScoreboard', () => {
         awayScore: 0,
         id: expect.any(String),
         date: expect.any(Date),
-        goals: [],
+        events: [],
       },
     ]);
   });
@@ -63,10 +65,77 @@ describe('useScoreboard', () => {
         awayScore: 1,
         id: expect.any(String),
         date: expect.any(Date),
-        goals: [
+        events: [
           {
+            type: MatchEventType.Goal,
             date: expect.any(Date),
             player,
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('should be able to add cards to a match', () => {
+    const { result } = renderHook(() => useScoreboard());
+
+    let id = '';
+    const player = randomPlayer();
+    act(() => {
+      id = result.current[1].startNewMatch('Home', 'Away');
+      result.current[1].addCard(CardType.Yellow, player, id);
+    });
+
+    expect(result.current[0]).toEqual([
+      {
+        homeTeam: 'Home',
+        awayTeam: 'Away',
+        homeScore: 0,
+        awayScore: 0,
+        id: expect.any(String),
+        date: expect.any(Date),
+        events: [
+          {
+            type: MatchEventType.Card,
+            date: expect.any(Date),
+            player,
+            cardType: CardType.Yellow,
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('should be able to add mix of goals and cards to a match', () => {
+    const { result } = renderHook(() => useScoreboard());
+
+    let id = '';
+    const player = randomPlayer();
+    act(() => {
+      id = result.current[1].startNewMatch('Home', 'Away');
+      result.current[1].updateScore(0, 1, player, id);
+      result.current[1].addCard(CardType.Yellow, player, id);
+    });
+
+    expect(result.current[0]).toEqual([
+      {
+        homeTeam: 'Home',
+        awayTeam: 'Away',
+        homeScore: 0,
+        awayScore: 1,
+        id: expect.any(String),
+        date: expect.any(Date),
+        events: [
+          {
+            type: MatchEventType.Goal,
+            date: expect.any(Date),
+            player,
+          },
+          {
+            type: MatchEventType.Card,
+            date: expect.any(Date),
+            player,
+            cardType: CardType.Yellow,
           },
         ],
       },
@@ -101,7 +170,7 @@ describe('useScoreboard', () => {
         awayScore: 0,
         id: expect.any(String),
         date: expect.any(Date),
-        goals: [],
+        events: [],
       },
     ]);
   });
@@ -125,7 +194,7 @@ describe('useScoreboard', () => {
         awayScore: 1,
         id: expect.any(String),
         date: expect.any(Date),
-        goals: expect.any(Array),
+        events: expect.any(Array),
       },
       {
         homeTeam: 'Home1',
@@ -134,7 +203,7 @@ describe('useScoreboard', () => {
         awayScore: 0,
         id: expect.any(String),
         date: expect.any(Date),
-        goals: expect.any(Array),
+        events: expect.any(Array),
       },
     ]);
   });
@@ -159,7 +228,7 @@ describe('useScoreboard', () => {
         awayScore: 0,
         id: expect.any(String),
         date: expect.any(Date),
-        goals: expect.any(Array),
+        events: expect.any(Array),
       },
       {
         homeTeam: 'Home1',
@@ -168,7 +237,7 @@ describe('useScoreboard', () => {
         awayScore: 0,
         id: expect.any(String),
         date: expect.any(Date),
-        goals: expect.any(Array),
+        events: expect.any(Array),
       },
     ]);
   });
@@ -215,7 +284,7 @@ describe('useScoreboard', () => {
         awayScore: 6,
         id: expect.any(String),
         date: expect.any(Date),
-        goals: expect.any(Array),
+        events: expect.any(Array),
       },
       {
         homeTeam: 'Spain',
@@ -224,7 +293,7 @@ describe('useScoreboard', () => {
         awayScore: 2,
         id: expect.any(String),
         date: expect.any(Date),
-        goals: expect.any(Array),
+        events: expect.any(Array),
       },
       {
         homeTeam: 'Mexico',
@@ -233,7 +302,7 @@ describe('useScoreboard', () => {
         awayScore: 5,
         id: expect.any(String),
         date: expect.any(Date),
-        goals: expect.any(Array),
+        events: expect.any(Array),
       },
       {
         homeTeam: 'Argentina',
@@ -242,7 +311,7 @@ describe('useScoreboard', () => {
         awayScore: 1,
         id: expect.any(String),
         date: expect.any(Date),
-        goals: expect.any(Array),
+        events: expect.any(Array),
       },
       {
         homeTeam: 'Germany',
@@ -251,7 +320,7 @@ describe('useScoreboard', () => {
         awayScore: 2,
         id: expect.any(String),
         date: expect.any(Date),
-        goals: expect.any(Array),
+        events: expect.any(Array),
       },
     ]);
   });

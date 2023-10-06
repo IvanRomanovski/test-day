@@ -1,6 +1,6 @@
-import { Player } from './Player';
+import { MatchEventBase } from './MatchEventBase';
+import { MatchEventType } from './MatchEventType';
 
-export interface Goal {
-  date: Date;
-  player: Player;
+export interface Goal extends MatchEventBase {
+  type: MatchEventType.Goal;
 }

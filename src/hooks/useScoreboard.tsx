@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Match } from '../types/Match';
 import { Player } from '../types/Player';
+import { MatchEventType } from '../types/MatchEventType';
+import { CardType } from '../types/CardType';
 
 /**
  * Interface for scoreboard functions.
@@ -27,6 +29,12 @@ export interface ScoreboardFunctions {
     id: string
   ) => void;
   /**
+   * Updates the score of a match. Accepts only incremental score changes.
+   * @param card - Card containing player and yellow/red information.
+   * @param id - The ID of the match to update.
+   */
+  addCard: (type: CardType, player: Player, id: string) => void;
+  /**
    * Finishes a match.
    * @param id - The ID of the match to finish.
    */
@@ -48,7 +56,7 @@ export function useScoreboard(): [Match[], ScoreboardFunctions] {
       awayScore: 0,
       id: `${homeTeam} - ${awayTeam}`,
       date: new Date(),
-      goals: [],
+      events: [],
     };
 
     setMatches((prevState) => {
@@ -79,7 +87,8 @@ export function useScoreboard(): [Match[], ScoreboardFunctions] {
         return prevState;
       }
 
-      updatedMatches[index].goals.push({
+      updatedMatches[index].events.push({
+        type: MatchEventType.Goal,
         date: new Date(),
         player,
       });
@@ -106,6 +115,22 @@ export function useScoreboard(): [Match[], ScoreboardFunctions] {
     });
   };
 
+  const addCard = (type: CardType, player: Player, id: string) => {
+    setMatches((prevState) => {
+      const updatedMatches = [...prevState];
+      const index = updatedMatches.findIndex((match) => match.id === id);
+      if (index === -1) return prevState;
+
+      updatedMatches[index].events.push({
+        type: MatchEventType.Card,
+        player,
+        cardType: type,
+        date: new Date(),
+      });
+      return updatedMatches;
+    });
+  };
+
   const finishMatch = (id: string) => {
     setMatches((prevState) => {
       const updatedMatches = [...prevState];
@@ -116,5 +141,5 @@ export function useScoreboard(): [Match[], ScoreboardFunctions] {
     });
   };
 
-  return [matches, { startNewMatch, updateScore, finishMatch }];
+  return [matches, { startNewMatch, updateScore, addCard, finishMatch }];
 }
