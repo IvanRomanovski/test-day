@@ -17,7 +17,8 @@ export function Score({ match }: ScoreProps) {
       (goal) =>
         Math.ceil(
           (goal.date.getTime() - date.getTime()) / 1000 / 60
-        ).toString() + '"'
+        ).toString() +
+        `" (${goal.player.firstName[0]}.${goal.player.lastName[0]})`
     )
     .join(' ')
     .trim();

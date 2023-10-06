@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Match } from '../types/Match';
+import { Player } from '../types/Player';
 
 /**
  * Interface for scoreboard functions.
@@ -13,12 +14,18 @@ export interface ScoreboardFunctions {
    */
   startNewMatch: (homeTeam: string, awayTeam: string) => string;
   /**
-   * Updates the score of a match.
+   * Updates the score of a match. Accepts only incremental score changes.
    * @param homeScore - The new score of the home team.
    * @param awayScore - The new score of the away team.
+   * @param player - Player who scored the goal.
    * @param id - The ID of the match to update.
    */
-  updateScore: (homeScore: number, awayScore: number, id: string) => void;
+  updateScore: (
+    homeScore: number,
+    awayScore: number,
+    player: Player,
+    id: string
+  ) => void;
   /**
    * Finishes a match.
    * @param id - The ID of the match to finish.
@@ -54,7 +61,12 @@ export function useScoreboard(): [Match[], ScoreboardFunctions] {
     return newMatch.id;
   };
 
-  const updateScore = (homeScore: number, awayScore: number, id: string) => {
+  const updateScore = (
+    homeScore: number,
+    awayScore: number,
+    player: Player,
+    id: string
+  ) => {
     setMatches((prevState) => {
       const updatedMatches = [...prevState];
       const index = updatedMatches.findIndex((match) => match.id === id);
@@ -69,6 +81,7 @@ export function useScoreboard(): [Match[], ScoreboardFunctions] {
 
       updatedMatches[index].goals.push({
         date: new Date(),
+        player,
       });
 
       updatedMatches[index].homeScore = homeScore;

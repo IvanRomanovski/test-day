@@ -1,5 +1,11 @@
 import { renderHook, act } from '@testing-library/react';
 import { useScoreboard } from './useScoreboard';
+import { Player } from '../types/Player';
+
+const randomPlayer = (): Player => ({
+  firstName: Math.random().toString(36).substring(7),
+  lastName: Math.random().toString(36).substring(7),
+});
 
 describe('useScoreboard', () => {
   it('should start with an empty list of matches', () => {
@@ -43,9 +49,10 @@ describe('useScoreboard', () => {
     const { result } = renderHook(() => useScoreboard());
 
     let id = '';
+    const player = randomPlayer();
     act(() => {
       id = result.current[1].startNewMatch('Home', 'Away');
-      result.current[1].updateScore(0, 1, id);
+      result.current[1].updateScore(0, 1, player, id);
     });
 
     expect(result.current[0]).toEqual([
@@ -59,6 +66,7 @@ describe('useScoreboard', () => {
         goals: [
           {
             date: expect.any(Date),
+            player,
           },
         ],
       },
@@ -81,7 +89,7 @@ describe('useScoreboard', () => {
 
     act(() => {
       result.current[1].startNewMatch('Home', 'Away');
-      result.current[1].updateScore(2, 1, 'random-id');
+      result.current[1].updateScore(2, 1, randomPlayer(), 'random-id');
       result.current[1].finishMatch('random-id');
     });
 
@@ -104,9 +112,9 @@ describe('useScoreboard', () => {
     act(() => {
       const id1 = result.current[1].startNewMatch('Home1', 'Away1');
       const id2 = result.current[1].startNewMatch('Home2', 'Away2');
-      result.current[1].updateScore(1, 0, id1);
-      result.current[1].updateScore(0, 1, id2);
-      result.current[1].updateScore(1, 1, id2);
+      result.current[1].updateScore(1, 0, randomPlayer(), id1);
+      result.current[1].updateScore(0, 1, randomPlayer(), id2);
+      result.current[1].updateScore(1, 1, randomPlayer(), id2);
     });
 
     expect(result.current[0]).toEqual([
@@ -184,11 +192,11 @@ describe('useScoreboard', () => {
 
       const setScore = (homeScore: number, awayScore: number, id: string) => {
         for (let i = 1; i <= homeScore; i++) {
-          result.current[1].updateScore(i, 0, id);
+          result.current[1].updateScore(i, 0, randomPlayer(), id);
         }
 
         for (let i = 1; i <= awayScore; i++) {
-          result.current[1].updateScore(homeScore, i, id);
+          result.current[1].updateScore(homeScore, i, randomPlayer(), id);
         }
       };
 

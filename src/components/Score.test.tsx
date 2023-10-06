@@ -38,12 +38,18 @@ describe('Score component', () => {
             date.getHours(),
             date.getMinutes() + 5
           ),
+          player: {
+            firstName: 'Robert',
+            lastName: 'Lewandowski',
+          },
         },
       ],
     };
 
     const { getByText } = render(<Score match={match} />);
-    expect(getByText('Real Madrid - Barcelona: 1 - 0 5"')).toBeInTheDocument();
+    expect(
+      getByText('Real Madrid - Barcelona: 1 - 0 5" (R.L)')
+    ).toBeInTheDocument();
   });
 
   it('renders the correct score when two goals scored', () => {
@@ -64,6 +70,10 @@ describe('Score component', () => {
             date.getHours(),
             date.getMinutes() + 5
           ),
+          player: {
+            firstName: 'Robert',
+            lastName: 'Lewandowski',
+          },
         },
         {
           date: new Date(
@@ -73,13 +83,17 @@ describe('Score component', () => {
             date.getHours(),
             date.getMinutes() + 20
           ),
+          player: {
+            firstName: 'Luka',
+            lastName: 'Modrić',
+          },
         },
       ],
     };
 
     const { getByText } = render(<Score match={match} />);
     expect(
-      getByText('Real Madrid - Barcelona: 1 - 1 5" 20"')
+      getByText('Real Madrid - Barcelona: 1 - 1 5" (R.L) 20" (L.M)')
     ).toBeInTheDocument();
   });
 });
