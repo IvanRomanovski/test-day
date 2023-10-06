@@ -41,6 +41,7 @@ export function useScoreboard(): [Match[], ScoreboardFunctions] {
       awayScore: 0,
       id: `${homeTeam} - ${awayTeam}`,
       date: new Date(),
+      goals: [],
     };
 
     setMatches((prevState) => {
@@ -58,6 +59,18 @@ export function useScoreboard(): [Match[], ScoreboardFunctions] {
       const updatedMatches = [...prevState];
       const index = updatedMatches.findIndex((match) => match.id === id);
       if (index === -1) return prevState;
+
+      const prevHomeScore = updatedMatches[index].homeScore;
+      const prevAwayScore = updatedMatches[index].awayScore;
+
+      if (homeScore - prevHomeScore + awayScore - prevAwayScore !== 1) {
+        return prevState;
+      }
+
+      updatedMatches[index].goals.push({
+        date: new Date(),
+      });
+
       updatedMatches[index].homeScore = homeScore;
       updatedMatches[index].awayScore = awayScore;
 

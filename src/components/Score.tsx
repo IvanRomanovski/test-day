@@ -11,6 +11,18 @@ export interface ScoreProps {
  * @returns {JSX.Element} - The rendered score as a list item.
  */
 export function Score({ match }: ScoreProps) {
-  const { homeTeam, awayTeam, homeScore, awayScore } = match;
-  return <li>{`${homeTeam} ${homeScore} - ${awayTeam} ${awayScore}`}</li>;
+  const { homeTeam, awayTeam, homeScore, awayScore, goals, date } = match;
+  const scores = goals
+    .map(
+      (goal) =>
+        Math.ceil(
+          (goal.date.getTime() - date.getTime()) / 1000 / 60
+        ).toString() + '"'
+    )
+    .join(' ')
+    .trim();
+
+  return (
+    <li>{`${homeTeam} - ${awayTeam}: ${homeScore} - ${awayScore} ${scores}`}</li>
+  );
 }
