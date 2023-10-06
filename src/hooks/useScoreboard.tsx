@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { Match } from '../types/Match';
+import { Player } from '../types/Player';
+import { MatchEventType } from '../types/MatchEventType';
+import { CardType } from '../types/CardType';
 
 /**
  * Interface for scoreboard functions.
@@ -13,12 +16,24 @@ export interface ScoreboardFunctions {
    */
   startNewMatch: (homeTeam: string, awayTeam: string) => string;
   /**
-   * Updates the score of a match.
+   * Updates the score of a match. Accepts only incremental score changes.
    * @param homeScore - The new score of the home team.
    * @param awayScore - The new score of the away team.
+   * @param player - Player who scored the goal.
    * @param id - The ID of the match to update.
    */
-  updateScore: (homeScore: number, awayScore: number, id: string) => void;
+  updateScore: (
+    homeScore: number,
+    awayScore: number,
+    player: Player,
+    id: string
+  ) => void;
+  /**
+   * Updates the score of a match. Accepts only incremental score changes.
+   * @param card - Card containing player and yellow/red information.
+   * @param id - The ID of the match to update.
+   */
+  addCard: (type: CardType, player: Player, id: string) => void;
   /**
    * Finishes a match.
    * @param id - The ID of the match to finish.
@@ -41,23 +56,43 @@ export function useScoreboard(): [Match[], ScoreboardFunctions] {
       awayScore: 0,
       id: `${homeTeam} - ${awayTeam}`,
       date: new Date(),
+      events: [],
     };
 
     setMatches((prevState) => {
       const index = prevState.findIndex((match) => match.id === newMatch.id);
       if (index !== -1) return prevState;
 
-      return [...prevState, newMatch];
+      return [newMatch, ...prevState];
     });
 
     return newMatch.id;
   };
 
-  const updateScore = (homeScore: number, awayScore: number, id: string) => {
+  const updateScore = (
+    homeScore: number,
+    awayScore: number,
+    player: Player,
+    id: string
+  ) => {
     setMatches((prevState) => {
       const updatedMatches = [...prevState];
       const index = updatedMatches.findIndex((match) => match.id === id);
       if (index === -1) return prevState;
+
+      const prevHomeScore = updatedMatches[index].homeScore;
+      const prevAwayScore = updatedMatches[index].awayScore;
+
+      if (homeScore - prevHomeScore + awayScore - prevAwayScore !== 1) {
+        return prevState;
+      }
+
+      updatedMatches[index].events.push({
+        type: MatchEventType.Goal,
+        date: new Date(),
+        player,
+      });
+
       updatedMatches[index].homeScore = homeScore;
       updatedMatches[index].awayScore = awayScore;
 
@@ -80,6 +115,22 @@ export function useScoreboard(): [Match[], ScoreboardFunctions] {
     });
   };
 
+  const addCard = (type: CardType, player: Player, id: string) => {
+    setMatches((prevState) => {
+      const updatedMatches = [...prevState];
+      const index = updatedMatches.findIndex((match) => match.id === id);
+      if (index === -1) return prevState;
+
+      updatedMatches[index].events.push({
+        type: MatchEventType.Card,
+        player,
+        cardType: type,
+        date: new Date(),
+      });
+      return updatedMatches;
+    });
+  };
+
   const finishMatch = (id: string) => {
     setMatches((prevState) => {
       const updatedMatches = [...prevState];
@@ -90,5 +141,5 @@ export function useScoreboard(): [Match[], ScoreboardFunctions] {
     });
   };
 
-  return [matches, { startNewMatch, updateScore, finishMatch }];
+  return [matches, { startNewMatch, updateScore, addCard, finishMatch }];
 }

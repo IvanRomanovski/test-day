@@ -1,3 +1,5 @@
+import { MatchEvent } from './MatchEvent';
+
 export interface Match {
   id: string;
   homeTeam: string;
@@ -5,4 +7,5 @@ export interface Match {
   homeScore: number;
   awayScore: number;
   date: Date;
+  events: MatchEvent[];
 }

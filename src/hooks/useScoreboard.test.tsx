@@ -1,5 +1,13 @@
 import { renderHook, act } from '@testing-library/react';
 import { useScoreboard } from './useScoreboard';
+import { Player } from '../types/Player';
+import { MatchEventType } from '../types/MatchEventType';
+import { CardType } from '../types/CardType';
+
+const randomPlayer = (): Player => ({
+  firstName: Math.random().toString(36).substring(7),
+  lastName: Math.random().toString(36).substring(7),
+});
 
 describe('useScoreboard', () => {
   it('should start with an empty list of matches', () => {
@@ -23,6 +31,7 @@ describe('useScoreboard', () => {
         awayScore: 0,
         id: expect.any(String),
         date: expect.any(Date),
+        events: [],
       },
     ]);
   });
@@ -42,19 +51,93 @@ describe('useScoreboard', () => {
     const { result } = renderHook(() => useScoreboard());
 
     let id = '';
+    const player = randomPlayer();
     act(() => {
       id = result.current[1].startNewMatch('Home', 'Away');
-      result.current[1].updateScore(2, 1, id);
+      result.current[1].updateScore(0, 1, player, id);
     });
 
     expect(result.current[0]).toEqual([
       {
         homeTeam: 'Home',
         awayTeam: 'Away',
-        homeScore: 2,
+        homeScore: 0,
         awayScore: 1,
         id: expect.any(String),
         date: expect.any(Date),
+        events: [
+          {
+            type: MatchEventType.Goal,
+            date: expect.any(Date),
+            player,
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('should be able to add cards to a match', () => {
+    const { result } = renderHook(() => useScoreboard());
+
+    let id = '';
+    const player = randomPlayer();
+    act(() => {
+      id = result.current[1].startNewMatch('Home', 'Away');
+      result.current[1].addCard(CardType.Yellow, player, id);
+    });
+
+    expect(result.current[0]).toEqual([
+      {
+        homeTeam: 'Home',
+        awayTeam: 'Away',
+        homeScore: 0,
+        awayScore: 0,
+        id: expect.any(String),
+        date: expect.any(Date),
+        events: [
+          {
+            type: MatchEventType.Card,
+            date: expect.any(Date),
+            player,
+            cardType: CardType.Yellow,
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('should be able to add mix of goals and cards to a match', () => {
+    const { result } = renderHook(() => useScoreboard());
+
+    let id = '';
+    const player = randomPlayer();
+    act(() => {
+      id = result.current[1].startNewMatch('Home', 'Away');
+      result.current[1].updateScore(0, 1, player, id);
+      result.current[1].addCard(CardType.Yellow, player, id);
+    });
+
+    expect(result.current[0]).toEqual([
+      {
+        homeTeam: 'Home',
+        awayTeam: 'Away',
+        homeScore: 0,
+        awayScore: 1,
+        id: expect.any(String),
+        date: expect.any(Date),
+        events: [
+          {
+            type: MatchEventType.Goal,
+            date: expect.any(Date),
+            player,
+          },
+          {
+            type: MatchEventType.Card,
+            date: expect.any(Date),
+            player,
+            cardType: CardType.Yellow,
+          },
+        ],
       },
     ]);
   });
@@ -75,7 +158,7 @@ describe('useScoreboard', () => {
 
     act(() => {
       result.current[1].startNewMatch('Home', 'Away');
-      result.current[1].updateScore(2, 1, 'random-id');
+      result.current[1].updateScore(2, 1, randomPlayer(), 'random-id');
       result.current[1].finishMatch('random-id');
     });
 
@@ -87,6 +170,7 @@ describe('useScoreboard', () => {
         awayScore: 0,
         id: expect.any(String),
         date: expect.any(Date),
+        events: [],
       },
     ]);
   });
@@ -97,8 +181,9 @@ describe('useScoreboard', () => {
     act(() => {
       const id1 = result.current[1].startNewMatch('Home1', 'Away1');
       const id2 = result.current[1].startNewMatch('Home2', 'Away2');
-      result.current[1].updateScore(2, 0, id1);
-      result.current[1].updateScore(1, 2, id2);
+      result.current[1].updateScore(1, 0, randomPlayer(), id1);
+      result.current[1].updateScore(0, 1, randomPlayer(), id2);
+      result.current[1].updateScore(1, 1, randomPlayer(), id2);
     });
 
     expect(result.current[0]).toEqual([
@@ -106,17 +191,19 @@ describe('useScoreboard', () => {
         homeTeam: 'Home2',
         awayTeam: 'Away2',
         homeScore: 1,
-        awayScore: 2,
+        awayScore: 1,
         id: expect.any(String),
         date: expect.any(Date),
+        events: expect.any(Array),
       },
       {
         homeTeam: 'Home1',
         awayTeam: 'Away1',
-        homeScore: 2,
+        homeScore: 1,
         awayScore: 0,
         id: expect.any(String),
         date: expect.any(Date),
+        events: expect.any(Array),
       },
     ]);
   });
@@ -127,12 +214,10 @@ describe('useScoreboard', () => {
     act(() => {
       jest.useFakeTimers();
       jest.setSystemTime(new Date(2023, 1, 1));
-      const id1 = result.current[1].startNewMatch('Home1', 'Away1');
+      result.current[1].startNewMatch('Home1', 'Away1');
       jest.setSystemTime(new Date(2024, 1, 1));
-      const id2 = result.current[1].startNewMatch('Home2', 'Away2');
+      result.current[1].startNewMatch('Home2', 'Away2');
       jest.useRealTimers();
-      result.current[1].updateScore(0, 0, id1);
-      result.current[1].updateScore(0, 0, id2);
     });
 
     expect(result.current[0]).toEqual([
@@ -143,6 +228,7 @@ describe('useScoreboard', () => {
         awayScore: 0,
         id: expect.any(String),
         date: expect.any(Date),
+        events: expect.any(Array),
       },
       {
         homeTeam: 'Home1',
@@ -151,6 +237,7 @@ describe('useScoreboard', () => {
         awayScore: 0,
         id: expect.any(String),
         date: expect.any(Date),
+        events: expect.any(Array),
       },
     ]);
   });
@@ -171,11 +258,22 @@ describe('useScoreboard', () => {
       jest.setSystemTime(new Date(2027, 1, 1));
       const id5 = result.current[1].startNewMatch('Argentina', 'Australia');
       jest.useRealTimers();
-      result.current[1].updateScore(0, 5, id1);
-      result.current[1].updateScore(10, 2, id2);
-      result.current[1].updateScore(2, 2, id3);
-      result.current[1].updateScore(6, 6, id4);
-      result.current[1].updateScore(3, 1, id5);
+
+      const setScore = (homeScore: number, awayScore: number, id: string) => {
+        for (let i = 1; i <= homeScore; i++) {
+          result.current[1].updateScore(i, 0, randomPlayer(), id);
+        }
+
+        for (let i = 1; i <= awayScore; i++) {
+          result.current[1].updateScore(homeScore, i, randomPlayer(), id);
+        }
+      };
+
+      setScore(0, 5, id1);
+      setScore(10, 2, id2);
+      setScore(2, 2, id3);
+      setScore(6, 6, id4);
+      setScore(3, 1, id5);
     });
 
     expect(result.current[0]).toEqual([
@@ -186,6 +284,7 @@ describe('useScoreboard', () => {
         awayScore: 6,
         id: expect.any(String),
         date: expect.any(Date),
+        events: expect.any(Array),
       },
       {
         homeTeam: 'Spain',
@@ -194,6 +293,7 @@ describe('useScoreboard', () => {
         awayScore: 2,
         id: expect.any(String),
         date: expect.any(Date),
+        events: expect.any(Array),
       },
       {
         homeTeam: 'Mexico',
@@ -202,6 +302,7 @@ describe('useScoreboard', () => {
         awayScore: 5,
         id: expect.any(String),
         date: expect.any(Date),
+        events: expect.any(Array),
       },
       {
         homeTeam: 'Argentina',
@@ -210,6 +311,7 @@ describe('useScoreboard', () => {
         awayScore: 1,
         id: expect.any(String),
         date: expect.any(Date),
+        events: expect.any(Array),
       },
       {
         homeTeam: 'Germany',
@@ -218,6 +320,7 @@ describe('useScoreboard', () => {
         awayScore: 2,
         id: expect.any(String),
         date: expect.any(Date),
+        events: expect.any(Array),
       },
     ]);
   });
