@@ -8,10 +8,11 @@ const matches: Match[] = [
   {
     homeTeam: 'Team A',
     awayTeam: 'Team B',
-    homeScore: 2,
-    awayScore: 1,
+    homeScore: 0,
+    awayScore: 0,
     id: 'Team A - Team B',
     date: new Date(),
+    events: [],
   },
   {
     homeTeam: 'Team C',
@@ -20,6 +21,7 @@ const matches: Match[] = [
     awayScore: 0,
     id: 'Team C - Team D',
     date: new Date(),
+    events: [],
   },
 ];
 
@@ -27,8 +29,8 @@ describe('Scoreboard', () => {
   it('renders a list of scores', () => {
     render(<Scoreboard matches={matches} />);
 
-    const position1 = screen.getByText('Team A 2 - Team B 1');
-    const position2 = screen.getByText('Team C 0 - Team D 0');
+    const position1 = screen.getByText('Team A - Team B: 0 - 0');
+    const position2 = screen.getByText('Team C - Team D: 0 - 0');
 
     expect(position1.compareDocumentPosition(position2)).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING
